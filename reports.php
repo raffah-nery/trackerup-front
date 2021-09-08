@@ -4,7 +4,7 @@ if(empty($_SESSION["id"])) {
   header("Location:login.php");
 }
 
-$PAGE_TITLE = "Ordens de Serviço";
+$PAGE_TITLE = "Relatórios";
 $PAGE_STYLE = '<style>
 .bd-placeholder-img {
   font-size: 1.125rem;
@@ -22,7 +22,7 @@ $PAGE_STYLE = '<style>
 </style>
 <!-- Custom styles for this template -->
 <link href="assets/css/dashboard.css" rel="stylesheet">';
-$CURRENT_PAGE = "orders";
+$CURRENT_PAGE = "reports";
 ?>
 
 <?php include('layout/body.php') ?>
