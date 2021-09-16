@@ -91,7 +91,7 @@ $CURRENT_PAGE = "parts";
         echo "<td>".$part->description."</td>";
         echo "<td>".$part->qty."</td>";
         echo "<td>".$part->ncm."</td>";
-        echo "<td></td></tr>";
+        echo '<td><button type="button" data-id="'.$part->code.'" class="btn btn-sm btn-outline-secondary btn-update">Editar</button><button type="button" data-id="'.$part->code.'" class="btn btn-sm btn-outline-secondary btn-delete">Deletar</button></td></tr>';
       }
       ?>
     </tbody>

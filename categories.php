@@ -68,7 +68,7 @@ $CURRENT_PAGE = "categories";
   <table class="table table-striped table-sm">
     <thead>
       <tr>
-        <th scope="col">Código</th>
+        <th scope="col">Id</th>
         <th scope="col">Nome</th>
         <th scope="col">Descrição</th>
         <th scope="col">Ações</th>
@@ -77,10 +77,10 @@ $CURRENT_PAGE = "categories";
     <tbody>
     <?php
       foreach ($categories_data as $part) {
-        echo "<tr><td>".$part->code."</td>";
+        echo "<tr><td>".$part->id."</td>";
         echo "<td>".$part->name."</td>";
         echo "<td>".$part->description."</td>";
-        echo "<td></td></tr>";
+        echo '<td><button type="button" data-id="'.$part->id.'" class="btn btn-sm btn-outline-secondary btn-update">Editar</button><button type="button" data-id="'.$part->id.'" class="btn btn-sm btn-outline-secondary btn-delete">Deletar</button></td></tr>';
       }
       ?>
     </tbody>
@@ -96,10 +96,6 @@ $CURRENT_PAGE = "categories";
       </div>
       <div class="modal-body">
       <form id="frmNew" name="frmNew" class="row g-3" method="post" action="">
-        <div class="col-md-4">
-          <label for="code" class="form-label">Código</label>
-          <input type="text" class="form-control" id="code" name="code" required oninvalid="this.setCustomValidity('Código é obrigatório')" onchange="this.setCustomValidity('')">
-        </div>
         <div class="col-md-8">
           <label for="name" class="form-label">Nome</label>
           <input type="text" class="form-control" id="name" name="name" required oninvalid="this.setCustomValidity('Nome é obrigatório')" onchange="this.setCustomValidity('')">
