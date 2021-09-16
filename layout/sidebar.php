@@ -11,6 +11,9 @@
         <a class="nav-link <?php if ($CURRENT_PAGE == "parts") {?>active<?php }?>" href="parts.php"> <span data-feather="shopping-cart"></span> Peças </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link <?php if ($CURRENT_PAGE == "categories") {?>active<?php }?>" href="categories.php"> <span data-feather="shopping-cart"></span> Categorias </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link <?php if ($CURRENT_PAGE == "customers") {?>active<?php }?>" href="customers.php"> <span data-feather="users"></span> Clientes </a>
       </li>
       <li class="nav-item">
