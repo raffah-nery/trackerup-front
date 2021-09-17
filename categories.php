@@ -4,25 +4,57 @@ if(empty($_SESSION["id"])) {
   header("Location:login.php");
 }
 
+if (isset($_GET['get_update_id'])) {
+  $api_url = 'https://api.trackerup.webseekers.com.br/v1/categories/'.$_GET['get_update_id'];
+  echo file_get_contents($api_url);
+  exit();
+}
+
 if (count($_POST) > 0)
 {
-    if (isset($_POST["code"]) && isset($_POST["name"]))
+    if ($_POST["method"] === "insert")
     {
-        $curl = curl_init("https://api.trackerup.webseekers.com.br/v1/categories");
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $_POST);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($curl);
-        $response = json_decode($response, true);
-        curl_close($curl);
-        if ($response["status"] !== "success")
+        if (isset($_POST["id"]) && isset($_POST["name"])) {
+          $curl = curl_init("https://api.trackerup.webseekers.com.br/v1/categories");
+          curl_setopt($curl, CURLOPT_POST, true);
+          curl_setopt($curl, CURLOPT_POSTFIELDS, $_POST);
+          curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+          $response = curl_exec($curl);
+          $response = json_decode($response, true);
+          curl_close($curl);
+          if ($response["status"] !== "success")
+          {
+            $ERROR = "Erro ao inserir a nova categoria.";
+          }
+        } else
         {
           $ERROR = "Erro ao inserir a nova categoria.";
         }
     }
-    else
+    if ($_POST["method"] === "update"){
+      if (isset($_POST["name"])) {
+        $curl = curl_init("https://api.trackerup.webseekers.com.br/v1/categories/".$_POST["id"]);
+          curl_setopt($curl, CURLOPT_PUT, true);
+          curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+          curl_setopt($curl, CURLOPT_POSTFIELDS, $_POST);
+          $response = curl_exec($curl);
+          $response = json_decode($response, true);
+          curl_close($curl);
+          if ($response["status"] !== "success")
+          {
+            $ERROR = "Erro ao inserir a nova categoria.";
+          }
+      }else
+        {
+          $ERROR = "Erro ao inserir a nova categoria.";
+        }
+    }
+    if (($_POST["method"] == "delete") && isset($_POST["id"]))
     {
-      $ERROR = "Erro ao inserir a nova categoria.";
+        $curl = curl_init("https://api.trackerup.webseekers.com.br/v1/categories/".$_POST["id"]);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_exec($curl);
     }
 }
 
@@ -80,22 +112,24 @@ $CURRENT_PAGE = "categories";
         echo "<tr><td>".$part->id."</td>";
         echo "<td>".$part->name."</td>";
         echo "<td>".$part->description."</td>";
-        echo '<td><button type="button" data-id="'.$part->id.'" class="btn btn-sm btn-outline-secondary btn-update">Editar</button><button type="button" data-id="'.$part->id.'" class="btn btn-sm btn-outline-secondary btn-delete">Deletar</button></td></tr>';
+        echo '<td><button type="button" data-id="'.$part->id.'" class="btn btn-sm btn-outline-secondary btn-update">Editar</button><button type="button" data-id="'.$part->id.'" data-name="'.$part->name.'" class="btn btn-sm btn-outline-secondary btn-delete">Deletar</button></td></tr>';
       }
       ?>
     </tbody>
   </table>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="newModalLabel">Nova Categoria</h5>
+        <h5 class="modal-title" id="categoryModalLabel"></h5>
         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      <form id="frmNew" name="frmNew" class="row g-3" method="post" action="">
+      <form id="frmCategory" name="frmCategory" class="row g-3" method="post" action="">
+        <input type="text" name="method" hidden>
+        <input type="text" name="id" hidden>
         <div class="col-md-8">
           <label for="name" class="form-label">Nome</label>
           <input type="text" class="form-control" id="name" name="name" required oninvalid="this.setCustomValidity('Nome é obrigatório')" onchange="this.setCustomValidity('')">
@@ -113,8 +147,30 @@ $CURRENT_PAGE = "categories";
     </div>
   </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Deletar Categoria</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <form id="frmDelete" name="frmDelete" class="row g-3" method="post">
+        <h4>Deseja realmente deletar a categoria <span id="deleteName"></span>?</h4>
+        <input type="text" name="id" hidden>
+        <input type="text" name="method" value="delete" hidden>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Deletar</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
 <?php include('layout/footer.php') ?>
-<script src="assets/js/categories.js"></script>
+<script src="/assets/js/categories.js"></script>
 </body>
 
 </html>
