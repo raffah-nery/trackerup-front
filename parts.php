@@ -6,7 +6,14 @@ if(empty($_SESSION["id"])) {
 
 if (count($_POST) > 0)
 {
-    if (isset($_POST["code"]) && isset($_POST["name"]) && isset($_POST["category"]))
+    if (($_POST["method"] == "delete") && isset($_POST["code"]))
+    {
+        $curl = curl_init("https://api.trackerup.webseekers.com.br/v1/parts/".$_POST["code"]);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_exec($curl);
+    }
+    else if (isset($_POST["code"]) && isset($_POST["name"]) && isset($_POST["category"]))
     {
         $curl = curl_init("https://api.trackerup.webseekers.com.br/v1/parts");
         curl_setopt($curl, CURLOPT_POST, true);
@@ -91,7 +98,7 @@ $CURRENT_PAGE = "parts";
         echo "<td>".$part->description."</td>";
         echo "<td>".$part->qty."</td>";
         echo "<td>".$part->ncm."</td>";
-        echo '<td><button type="button" data-id="'.$part->code.'" class="btn btn-sm btn-outline-secondary btn-update">Editar</button><button type="button" data-id="'.$part->code.'" class="btn btn-sm btn-outline-secondary btn-delete">Deletar</button></td></tr>';
+        echo '<td><button type="button" data-code="'.$part->code.'" class="btn btn-sm btn-outline-secondary btn-update">Editar</button><button type="button" data-code="'.$part->code.'" data-name="'.$part->name.'" class="btn btn-sm btn-outline-secondary btn-delete">Deletar</button></td></tr>';
       }
       ?>
     </tbody>
@@ -141,6 +148,28 @@ $CURRENT_PAGE = "parts";
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
           <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Deletar Peça</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <form id="frmDelete" name="frmDelete" class="row g-3" method="post">
+        <h4>Deseja realmente deletar a peça <span id="deleteName"></span>?</h4>
+        <input type="text" name="code" hidden>
+        <input type="text" name="method" value="delete" hidden>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Deletar</button>
         </div>
       </form>
       </div>
